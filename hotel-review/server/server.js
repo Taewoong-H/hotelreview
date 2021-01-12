@@ -16,6 +16,11 @@ app.post('/text', (req, res) => {
   //데이터 받는 곳
   const text1 = req.body.inText;
   console.log(text1);
+  // 데이터 보내기
+  const sendText = {
+    text: '보내기 성공',
+  };
+  res.send(sendText);
 });
 
 app.listen(port, () => {

@@ -21,7 +21,14 @@ export default class Example3 extends React.Component {
         'content-type': 'application/json',
       },
       body: JSON.stringify(textbox), //textbox라는 객체를 보냄
-    });
+    })
+      .then((res) => res.json()) // response를 받아 text state에 저장.
+      .then((json) => {
+        console.log(json);
+        this.setState({
+          text: json.text,
+        });
+      });
   };
 
   render() {
