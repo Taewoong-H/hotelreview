@@ -34,9 +34,9 @@ export default class Example3 extends React.Component {
   render() {
     return (
       <div>
+        <h3>아이디 입력</h3>
         <input name="text" onChange={this.handlChange}></input>
         <button onClick={this.onclick}>전송</button>
-        <h3>{this.state.text}</h3>
       </div>
     );
   }

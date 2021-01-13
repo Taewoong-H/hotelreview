@@ -3,6 +3,16 @@ const app = express();
 const port = 3001; // <- 3000에서 다른 숫자로 변경
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const mysql = require('mysql');
+
+var connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '1234',
+  database: 'hello',
+});
+
+connection.connect();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
@@ -13,14 +23,17 @@ app.get('/', (req, res) => {
 });
 
 app.post('/text', (req, res) => {
-  //데이터 받는 곳
-  const text1 = req.body.inText;
-  console.log(text1);
-  // 데이터 보내기
-  const sendText = {
-    text: '보내기 성공',
-  };
-  res.send(sendText);
+  const user_id = req.body.inText;
+  console.log(user_id);
+  // query문 추가
+  connection.query('INSERT INTO new_table (user_id) values(?)', [user_id]),
+    function (err, rows, fields) {
+      if (err) {
+        console.log('DB저장 실패');
+      } else {
+        console.log('DB저장 성공');
+      }
+    };
 });
 
 app.listen(port, () => {
