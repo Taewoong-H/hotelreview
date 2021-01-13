@@ -1,10 +1,10 @@
 import React from 'react';
-import Example3 from './Example3';
+import Hotels from './Hotels';
 
 function App() {
   return (
     <div>
-      <Example3 />
+      <Hotels />
     </div>
   );
 }
