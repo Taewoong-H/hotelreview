@@ -3,7 +3,7 @@ import React from 'react';
 export default class Hotels extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hotelName: '' };
+    this.state = { hotelName: '', reviewData: '' };
   }
 
   handleSearch = () => {
@@ -11,15 +11,14 @@ export default class Hotels extends React.Component {
     const hotelsSelect = document.querySelector('#hotels-select');
 
     searchButton.addEventListener('click', () => {
-      console.log(hotelsSelect.value);
       this.setState({
         hotelName: hotelsSelect.value,
       });
-      this.requestServer();
+      this.requireServer();
     });
   };
 
-  requestServer = () => {
+  requireServer = () => {
     const hotels = {
       name: this.state.hotelName,
     };
@@ -30,25 +29,34 @@ export default class Hotels extends React.Component {
         'content-type': 'application/json',
       },
       body: JSON.stringify(hotels),
-    });
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        this.setState({
+          reviewData: json.review_data,
+        });
+      });
   };
 
-  componentDidMount = () => {
+  componentDidMount() {
     this.handleSearch();
-  };
+  }
 
   render() {
     return (
       <div>
         <h1>호텔 검색</h1>
-        <select id="hotels-select">
-          <option value="호텔1" selected>
-            호텔1
+        <select id="hotels-select" defaultValue="default">
+          <option value="default" disabled>
+            Choose a Hotel ...
           </option>
+          <option value="호텔1">호텔1</option>
           <option value="호텔2">호텔2</option>
           <option value="호텔3">호텔3</option>
         </select>
         <button id="hotels-search">검색</button>
+        <h3>{this.state.reviewData}</h3>
       </div>
     );
   }
