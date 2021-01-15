@@ -3,7 +3,10 @@ import React from 'react';
 export default class Hotels extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { hotelName: '', reviewData: '' };
+    this.state = {
+      hotelName: '',
+      reviewData: '',
+    };
   }
 
   handleSearch = () => {
@@ -32,9 +35,11 @@ export default class Hotels extends React.Component {
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
+        // console.log(json);
+        const reviewDataAll = json.map((reviewData) => reviewData.review_data);
+
         this.setState({
-          reviewData: json.review_data,
+          reviewData: reviewDataAll,
         });
       });
   };
