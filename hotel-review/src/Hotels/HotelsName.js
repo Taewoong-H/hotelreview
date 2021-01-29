@@ -4,25 +4,26 @@ export default class HotelsName extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      totalHotelId: '',
       totalHotelName: '',
     };
+
+    
   }
 
   getTotalHotelName = () => {
     fetch('http://localhost:3001/api/hotel_name')
       .then((res) => res.json())
       .then((json) => {
+        const hotelNames = json.map((hotelData) => hotelData.hotel_name);
+        const hotelId = json.map((hotelData) => hotelData.id);
+
         console.log(json);
         this.setState({
-          totalHotelName: json,
+          totalHotelId: hotelId,
+          totalHotelName: hotelNames,
         });
       });
-  };
-
-  getCountry = () => {
-    const countryList = this.state.totalHotelName.map((obj) => obj.country);
-
-    console.log(countryList);
   };
 
   componentDidMount() {
@@ -30,19 +31,22 @@ export default class HotelsName extends React.Component {
   }
 
   render() {
+    // state.totalHotelName이 배열이 아닌 객체로 저장되어있음... 왜그런지??
+    const totalHotelName = Object.values(this.state.totalHotelName); // 그래서 객체 > 배열로 바꿈
+    const repeatHotelNameOption = totalHotelName.map((name, key) => {
+      return <option value={key} key={key}>{name}</option>;
+    });
+
     return (
       <div>
         <select id="hotels-select" defaultValue="default">
           <option value="default" disabled>
             Choose a Hotel ...
           </option>
-          <option value={this.state.totalHotelName.id}>{this.state.totalHotelName.hotel_name}</option>
+          {repeatHotelNameOption}
         </select>
         <button id="hotels-search">검색</button>
       </div>
     );
   }
-
-  // this.state.totalHotelName.id 이부분 오류..
-  // state에 안들어간건지 모르겠음. 해결 필요.
 }

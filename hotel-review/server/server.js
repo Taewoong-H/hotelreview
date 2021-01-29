@@ -26,7 +26,6 @@ app.get('/api/hotel_name', (req, res) => {
     if (err) {
       console.log('데이터 가져오기 실패');
     } else {
-      console.log(rows[0]);
       res.send(rows);
     }
   });
