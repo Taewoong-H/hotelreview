@@ -20,6 +20,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(bodyParser.json());
 
+// 호텔 이름 API
+app.get('/api/hotel_name', (req, res) => {
+  connection.query('SELECT * FROM hotel_name_list', (err, rows, fields) => {
+    if (err) {
+      console.log('데이터 가져오기 실패');
+    } else {
+      console.log(rows[0]);
+      res.send(rows);
+    }
+  });
+});
+
 app.post('/text', (req, res) => {
   // 데이터 받는 곳
   const text1 = req.body.name;

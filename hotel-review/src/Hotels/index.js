@@ -1,10 +1,11 @@
 import React from 'react';
+import HotelsName from './HotelsName';
 
 export default class Hotels extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      hotelName: '',
+      selectedHotelName: '',
       reviewData: '',
     };
   }
@@ -15,7 +16,7 @@ export default class Hotels extends React.Component {
 
     searchButton.addEventListener('click', () => {
       this.setState({
-        hotelName: hotelsSelect.value,
+        selectedHotelName: hotelsSelect.value,
       });
       this.requireServer();
     });
@@ -23,7 +24,7 @@ export default class Hotels extends React.Component {
 
   requireServer = () => {
     const hotels = {
-      name: this.state.hotelName,
+      name: this.state.selectedHotelName,
     };
 
     fetch('http://localhost:3001/text', {
@@ -44,23 +45,21 @@ export default class Hotels extends React.Component {
       });
   };
 
+  hotelNameOption() {
+    const hotelNames = this.state.totalHotelName;
+    console.log(hotelNames);
+  }
+
   componentDidMount() {
     this.handleSearch();
+    this.hotelNameOption();
   }
 
   render() {
     return (
       <div>
         <h1>호텔 검색</h1>
-        <select id="hotels-select" defaultValue="default">
-          <option value="default" disabled>
-            Choose a Hotel ...
-          </option>
-          <option value="호텔1">호텔1</option>
-          <option value="호텔2">호텔2</option>
-          <option value="호텔3">호텔3</option>
-        </select>
-        <button id="hotels-search">검색</button>
+        <HotelsName />
         <h3>{this.state.reviewData}</h3>
       </div>
     );
