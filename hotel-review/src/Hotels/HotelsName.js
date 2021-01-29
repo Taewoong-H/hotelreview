@@ -36,11 +36,13 @@ export default class HotelsName extends React.Component {
           <option value="default" disabled>
             Choose a Hotel ...
           </option>
-          <option value="호텔1">{this.state.totalHotelName[0]}</option>
+          <option value={this.state.totalHotelName.id}>{this.state.totalHotelName.hotel_name}</option>
         </select>
         <button id="hotels-search">검색</button>
-        {this.getCountry}
       </div>
     );
   }
+
+  // this.state.totalHotelName.id 이부분 오류..
+  // state에 안들어간건지 모르겠음. 해결 필요.
 }

@@ -45,14 +45,8 @@ export default class Hotels extends React.Component {
       });
   };
 
-  hotelNameOption() {
-    const hotelNames = this.state.totalHotelName;
-    console.log(hotelNames);
-  }
-
   componentDidMount() {
     this.handleSearch();
-    this.hotelNameOption();
   }
 
   render() {
