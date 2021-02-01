@@ -4,46 +4,113 @@ export default class HotelsName extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      totalHotelId: '',
-      totalHotelName: '',
+      totalHotels: [],
+      selected: {
+        country: '',
+        location: '',
+        hotelName: '',
+      }
     };
-
-    
   }
 
   getTotalHotelName = () => {
     fetch('http://localhost:3001/api/hotel_name')
       .then((res) => res.json())
       .then((json) => {
-        const hotelNames = json.map((hotelData) => hotelData.hotel_name);
-        const hotelId = json.map((hotelData) => hotelData.id);
-
-        console.log(json);
         this.setState({
-          totalHotelId: hotelId,
-          totalHotelName: hotelNames,
+          totalHotels: json,
         });
       });
   };
 
+  handleCountrySelect() {
+    const countrySelect = document.querySelector('#country-select');
+    countrySelect.addEventListener('change', (event) => {
+      this.setState({
+        selected: {
+          country: event.target.value,
+        }
+      });
+    });
+  }
+
+  handleLocationSelect() {
+    const locationSelect = document.querySelector('#location-select');
+    locationSelect.addEventListener('change', (event) => {
+      this.setState({
+        selected: {
+          ...this.state.selected, // setState를 그냥 하면 country가 초기화됨.. 그래서 그대로 가져가는걸 ...(전개연산자)로 덮어씌우고 설정한다.
+          location: event.target.value,
+        }
+      });
+    });
+  }
+
   componentDidMount() {
     this.getTotalHotelName();
+    this.handleCountrySelect();
+    this.handleLocationSelect();
   }
 
   render() {
-    // state.totalHotelName이 배열이 아닌 객체로 저장되어있음... 왜그런지??
-    const totalHotelName = Object.values(this.state.totalHotelName); // 그래서 객체 > 배열로 바꿈
-    const repeatHotelNameOption = totalHotelName.map((name, key) => {
+    const { selected, totalHotels } = this.state; // 그대로 가져오면 안됨. {}으로 객체 자체를 가져와서 배열로 할당.
+
+    // country
+    const selectCountries = totalHotels.map((obj) => obj.country);
+    const uniqueSelectCountries = [...new Set(selectCountries)];
+    const mappingSelectCountries = uniqueSelectCountries.map((obj, key) => {
+      return <option value={obj} key={key}>{obj}</option>;
+    });
+
+    // location
+    const locationsEqualToCountry = totalHotels.filter((obj) => {
+      if (selected.country === obj.country) {
+        return obj.location
+      }
+    });
+    const selectLocations = locationsEqualToCountry.map((obj) => obj.location);
+    const uniqueSelectLocations = [...new Set(selectLocations)];
+    const mappingSelectLocations = uniqueSelectLocations.map((obj, key) => {
+      return <option value={obj} key={key}>{obj}</option>;
+    })
+
+    // hotel_name
+    const hotelNameEqualToLocation = totalHotels.filter((obj) => {
+      if (selected.location === obj.location) {
+        return obj.hotel_name
+      }
+    });
+    const selectHotelNames = hotelNameEqualToLocation.map((obj) => obj.hotel_name);
+    const mappingSelectHotelNames = selectHotelNames.map((name, key) => {
       return <option value={key} key={key}>{name}</option>;
     });
 
     return (
       <div>
+        <label>나라: </label>
+        <select id="country-select" defaultValue="default">
+          <option value="default" disabled>
+            Choose a Country ...
+          </option>
+          {mappingSelectCountries}
+        </select>
+        <br></br>
+
+        <label>지역: </label>
+        <select id="location-select" defaultValue="default">
+          <option value="default" disabled>
+            Choose a Location ...
+          </option>
+          {mappingSelectLocations}
+        </select>
+        <br></br>
+        
+        <label>호텔 이름: </label>
         <select id="hotels-select" defaultValue="default">
           <option value="default" disabled>
             Choose a Hotel ...
           </option>
-          {repeatHotelNameOption}
+          {mappingSelectHotelNames}
         </select>
         <button id="hotels-search">검색</button>
       </div>
