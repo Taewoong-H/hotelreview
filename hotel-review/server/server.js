@@ -1,4 +1,3 @@
-import { selectHotel } from './selectHotel.js';
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -31,20 +30,23 @@ app.get('/api/hotel_name', (req, res) => {
   });
 });
 
-app.post('/text', (req, res) => {
+// 호텔 리뷰 API
+app.post('/api/hotel_review', (req, res) => {
   // 데이터 받는 곳
-  const text1 = req.body.name;
-  console.log(text1);
+  const requestHotelName = req.body.name;
+  console.log(requestHotelName);
 
   // query문
   connection.query('SELECT * FROM csv', function (err, rows, fields) {
     if (err) {
       console.log('데이터 가져오기 실패');
     } else {
-      const sendDatas = selectHotel(text1, rows);
+      const sendAllReview = rows.filter((row) => {
+        return row.hotel_name == requestHotelName;
+      });
 
-      console.log(sendDatas);
-      res.send(sendDatas);
+      console.log(sendAllReview);
+      res.send(sendAllReview);
     }
   });
 });

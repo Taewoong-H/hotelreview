@@ -13,7 +13,7 @@ export default class HotelsName extends React.Component {
     };
   }
 
-  getTotalHotelName = () => {
+  getHotelNameAPI() {
     fetch('http://localhost:3001/api/hotel_name')
       .then((res) => res.json())
       .then((json) => {
@@ -47,7 +47,7 @@ export default class HotelsName extends React.Component {
   }
 
   componentDidMount() {
-    this.getTotalHotelName();
+    this.getHotelNameAPI();
     this.handleCountrySelect();
     this.handleLocationSelect();
   }
@@ -82,7 +82,7 @@ export default class HotelsName extends React.Component {
     });
     const selectHotelNames = hotelNameEqualToLocation.map((obj) => obj.hotel_name);
     const mappingSelectHotelNames = selectHotelNames.map((name, key) => {
-      return <option value={key} key={key}>{name}</option>;
+      return <option value={name} key={key}>{name}</option>;
     });
 
     return (
@@ -112,7 +112,7 @@ export default class HotelsName extends React.Component {
           </option>
           {mappingSelectHotelNames}
         </select>
-        <button id="hotels-search">검색</button>
+        
       </div>
     );
   }
