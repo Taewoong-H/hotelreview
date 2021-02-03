@@ -45,7 +45,7 @@ app.post('/api/hotel_review', (req, res) => {
         return row.hotel_name == requestHotelName;
       });
 
-      console.log(sendAllReview);
+      // console.log(sendAllReview);
       res.send(sendAllReview);
     }
   });

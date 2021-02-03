@@ -25,17 +25,25 @@ export default class HotelsName extends React.Component {
 
   handleCountrySelect() {
     const countrySelect = document.querySelector('#country-select');
+    const locationSelect = document.querySelector('#location-select');
+    const hotelsSelect = document.querySelector('#hotels-select');
+
     countrySelect.addEventListener('change', (event) => {
       this.setState({
         selected: {
           country: event.target.value,
         }
       });
+      // 호텔, 지역 선택값 초기화
+      locationSelect.options[0].selected = true;
+      hotelsSelect.options[0].selected = true;
     });
   }
 
   handleLocationSelect() {
     const locationSelect = document.querySelector('#location-select');
+    const hotelsSelect = document.querySelector('#hotels-select');
+
     locationSelect.addEventListener('change', (event) => {
       this.setState({
         selected: {
@@ -43,6 +51,8 @@ export default class HotelsName extends React.Component {
           location: event.target.value,
         }
       });
+      // 호텔 선택값 초기화
+      hotelsSelect.options[0].selected = true;
     });
   }
 

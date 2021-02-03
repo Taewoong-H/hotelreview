@@ -10,7 +10,7 @@ export default class HotelsSearch extends React.Component {
     };
   }
 
-  handleSearch = () => {
+  handleSearch() {
     const searchButton = document.querySelector('#hotels-search');
     const hotelsSelect = document.querySelector('#hotels-select');
 
@@ -18,11 +18,12 @@ export default class HotelsSearch extends React.Component {
       this.setState({
         selectedHotelName: hotelsSelect.value,
       });
-      this.requireServer();
+      this.getHotelReviewAPI();
+    
     });
   };
 
-  requireServer = () => {
+  getHotelReviewAPI() {
     const hotels = {
       name: this.state.selectedHotelName,
     };
@@ -50,11 +51,13 @@ export default class HotelsSearch extends React.Component {
   }
 
   render() {
+    const { reviewData } = this.state;
+    
     return (
       <div>
         <HotelsName />
         <button id="hotels-search">검색</button>
-        <h3>{this.state.reviewData}</h3>
+        <h3>{reviewData}</h3>
       </div>
     );
   }
