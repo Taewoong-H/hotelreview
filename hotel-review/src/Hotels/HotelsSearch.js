@@ -38,14 +38,33 @@ export default class HotelsSearch extends React.Component {
       .then((res) => res.json())
       .then((json) => {
         // console.log(json);
-        const reviewDataAll = json.map((reviewData) => reviewData.review_data);
-
+        const reviewDataAll = this.getBasicWord(json);
+        
         this.setState({
           reviewData: reviewDataAll,
         });
       });
   };
 
+  getBasicWord(json) {
+    let reviewDataAll = [];
+
+    json.forEach((reviewData) => {
+      let words = reviewData.review_data2;
+      words = words.split("'");
+      const deleteSpecialCharacter = ["[", ", ", "]", "[]"];
+
+      deleteSpecialCharacter.forEach((character) => {
+        while(words.indexOf(character) !== -1) {
+          words.splice(words.indexOf(character), 1);
+        }
+      });
+      reviewDataAll += words;
+    });
+
+    return reviewDataAll;
+  }
+  
   componentDidMount() {
     this.handleSearch();
   }
