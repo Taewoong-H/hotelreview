@@ -39,6 +39,7 @@ export default class HotelsSearch extends React.Component {
       .then((json) => {
         // console.log(json);
         const reviewDataAll = this.getBasicWord(json);
+        console.log(reviewDataAll.split(','));
         
         this.setState({
           reviewData: reviewDataAll,
@@ -64,7 +65,7 @@ export default class HotelsSearch extends React.Component {
 
     return reviewDataAll;
   }
-  
+
   componentDidMount() {
     this.handleSearch();
   }

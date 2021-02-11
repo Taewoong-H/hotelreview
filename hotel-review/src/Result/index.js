@@ -18,7 +18,7 @@ export default class Result extends React.Component {
     .start();
 
     function end(words) {
-      d3.select("body")
+      d3.select("#word-cloud")
           .append("svg")
           .attr("width", 500)
           .attr("height", 500)
@@ -40,5 +40,5 @@ export default class Result extends React.Component {
   }
 
 
-  render() { return <div ref="canvas"></div> }
+  render() { return <div id="word-cloud"></div> }
 }
