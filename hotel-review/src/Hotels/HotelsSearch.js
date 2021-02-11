@@ -1,14 +1,11 @@
 import React from 'react';
-import HotelsName from './HotelsName';
-import HotelsResult from './HotelsResult';
-import Test from './Test';
+import ResultContainer from './ResultContainer';
 import Store from '../store';
 
 export default class HotelsSearch extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedHotelName: '',
       reviewData: [],
     };
   }
@@ -18,17 +15,15 @@ export default class HotelsSearch extends React.Component {
     const hotelsSelect = document.querySelector('#hotels-select');
 
     searchButton.addEventListener('click', () => {
-      this.setState({
-        selectedHotelName: hotelsSelect.value,
-      });
-      this.getHotelReviewAPI();
-    
+      const selectedHotelName = hotelsSelect.value;
+  
+      this.getHotelReviewAPI(selectedHotelName);
     });
   };
 
-  getHotelReviewAPI() {
+  getHotelReviewAPI(selectedHotelName) {
     const hotels = {
-      name: this.state.selectedHotelName,
+      name: selectedHotelName,
     };
 
     fetch('http://localhost:3001/api/hotel_review', {
@@ -73,15 +68,11 @@ export default class HotelsSearch extends React.Component {
   }
 
   render() {
-    const { reviewData } = this.state;
-    
     return (
       <div>
         <Store.Provider value={this.state}>
-          <HotelsName />
           <button id="hotels-search">검색</button>
-          
-          <Test />
+          <ResultContainer />
         </Store.Provider>
       </div>
     );

@@ -122,7 +122,6 @@ export default class HotelsName extends React.Component {
           </option>
           {mappingSelectHotelNames}
         </select>
-        
       </div>
     );
   }

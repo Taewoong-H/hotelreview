@@ -1,4 +1,5 @@
 import React from 'react';
+import HotelsName from './HotelsName';
 import HotelsSearch from './HotelsSearch';
 
 export default class Hotels extends React.Component {
@@ -7,6 +8,7 @@ export default class Hotels extends React.Component {
     return (
       <div>
         <h1>호텔 검색</h1>
+        <HotelsName />
         <HotelsSearch />
       </div>
     );
