@@ -1,12 +1,15 @@
 import React from 'react';
 import HotelsName from './HotelsName';
+import HotelsResult from './HotelsResult';
+import Test from './Test';
+import Store from '../store';
 
 export default class HotelsSearch extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedHotelName: '',
-      reviewData: '',
+      reviewData: [],
     };
   }
 
@@ -38,11 +41,10 @@ export default class HotelsSearch extends React.Component {
       .then((res) => res.json())
       .then((json) => {
         // console.log(json);
-        const reviewDataAll = this.getBasicWord(json);
-        console.log(reviewDataAll.split(','));
+        const reviewDataAll = this.getBasicWord(json).split(',');
         
         this.setState({
-          reviewData: reviewDataAll,
+          reviewData: [...reviewDataAll],
         });
       });
   };
@@ -75,9 +77,12 @@ export default class HotelsSearch extends React.Component {
     
     return (
       <div>
-        <HotelsName />
-        <button id="hotels-search">검색</button>
-        <h3>{reviewData}</h3>
+        <Store.Provider value={this.state}>
+          <HotelsName />
+          <button id="hotels-search">검색</button>
+          
+          <Test />
+        </Store.Provider>
       </div>
     );
   }
