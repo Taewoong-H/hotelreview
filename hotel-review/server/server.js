@@ -34,7 +34,7 @@ app.get('/api/hotel_name', (req, res) => {
 app.post('/api/hotel_review', (req, res) => {
   // 데이터 받는 곳
   const requestHotelName = req.body.name;
-  console.log(requestHotelName);
+  console.log(req);
 
   // query문
   connection.query('SELECT * FROM csv', function (err, rows, fields) {

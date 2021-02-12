@@ -1,22 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as d3 from 'd3';
 import cloud from 'd3-cloud';
 
 const width = 400
 const height = 400
 
-export default class HotelsResult extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    // 시작전 기존 svg 삭제
+function HotelsResult(props) {
+  useEffect(() => {
     d3.selectAll('svg').remove();
 
     cloud()
       .size([width, height])
-      .words(this.props.result.map(function(d) {
+      .words(props.words.map(function(d) {
         return {text: d, size: 10 + Math.random() * 90, test: "haha"};
       }))
       .padding(5)
@@ -45,11 +40,14 @@ export default class HotelsResult extends React.Component {
           .text(function(d) { return d.text; });
       console.log(JSON.stringify(words));
     }
-  }
+  })
 
-  render() { 
-    return (
-        <div id="word-cloud"></div>
-    );
-  }
+  return (
+    <div>
+      <h1>리뷰 분석 결과</h1>
+      <div id="word-cloud"></div>
+    </div>
+  )
 }
+
+export default HotelsResult;

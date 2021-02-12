@@ -1,53 +1,37 @@
-import React from 'react';
-import ResultContainer from './ResultContainer';
-import Store from '../store';
+import React, { useState } from 'react';
+import HotelsResult from './HotelsResult';
+import axios from 'axios';
 
-export default class HotelsSearch extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      reviewData: [],
-    };
-  }
+function HotelsSearch() {
+  const [reviewWords, setReviewWords] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  handleSearch() {
-    const searchButton = document.querySelector('#hotels-search');
-    const hotelsSelect = document.querySelector('#hotels-select');
-
-    searchButton.addEventListener('click', () => {
-      const selectedHotelName = hotelsSelect.value;
-  
-      this.getHotelReviewAPI(selectedHotelName);
-    });
+  const clickSearch = () => {
+    const selectedHotelName = document.querySelector('#hotels-select').value;
+    
+    fetchReviewAPI(selectedHotelName);
   };
 
-  getHotelReviewAPI(selectedHotelName) {
-    const hotels = {
-      name: selectedHotelName,
-    };
+  const fetchReviewAPI = async(value) => {
+    try {
+      setError(null);
+      setLoading(true);
 
-    fetch('http://localhost:3001/api/hotel_review', {
-      method: 'post',
-      headers: {
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(hotels),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        // console.log(json);
-        const reviewDataAll = this.getBasicWord(json).split(',');
-        
-        this.setState({
-          reviewData: [...reviewDataAll],
-        });
-      });
+      const response = await axios.post('http://localhost:3001/api/hotel_review', { name: value });
+      const reviewArray = getBasicWord(response.data).split(',');
+
+      setReviewWords(reviewArray);
+    } catch (e) {
+      setError(e);
+    }
+    setLoading(false);
   };
 
-  getBasicWord(json) {
-    let reviewDataAll = [];
+  const getBasicWord = (data) => {
+    let reviewDataAll = '';
 
-    json.forEach((reviewData) => {
+    data.forEach((reviewData) => {
       let words = reviewData.review_data2;
       words = words.split("'");
       const deleteSpecialCharacter = ["[", ", ", "]", "[]"];
@@ -63,18 +47,14 @@ export default class HotelsSearch extends React.Component {
     return reviewDataAll;
   }
 
-  componentDidMount() {
-    this.handleSearch();
-  }
-
-  render() {
-    return (
-      <div>
-        <Store.Provider value={this.state}>
-          <button id="hotels-search">검색</button>
-          <ResultContainer />
-        </Store.Provider>
-      </div>
-    );
-  }
+  if (loading) return <div>로딩중..</div>
+  if (error) return <div>에러가 발생했습니다.</div>
+  return (
+    <div>
+      <button id="hotels-search" onClick={clickSearch}>검색</button>
+      <HotelsResult words={reviewWords} />
+    </div>
+  );
 }
+
+export default HotelsSearch;

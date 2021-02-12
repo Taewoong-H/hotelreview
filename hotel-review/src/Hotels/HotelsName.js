@@ -1,117 +1,83 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-export default class HotelsName extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      totalHotels: [],
-      selected: {
-        country: '',
-        location: '',
-        hotelName: '',
-      }
-    };
-  }
+function HotelsName() {
+  const [totalHotels, setTotalHotels] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  getHotelNameAPI() {
-    fetch('http://localhost:3001/api/hotel_name')
-      .then((res) => res.json())
-      .then((json) => {
-        this.setState({
-          totalHotels: json,
-        });
-      });
+  const fetchHotels = async() => {
+    try {
+      // 요청 처음에 초기화
+      setError(null);
+      setTotalHotels([]);
+      // loading 상태 true
+      setLoading(true);
+
+      const response = await axios.get('http://localhost:3001/api/hotel_name');
+      setTotalHotels(response.data);
+      console.log('fetch HotelNames');
+    } catch (e) {
+      setError(e);
+    }
+    setLoading(false);
   };
+  
+  useEffect(() => {
+    fetchHotels();
+  }, []);
 
-  handleCountrySelect() {
-    const countrySelect = document.querySelector('#country-select');
-    const locationSelect = document.querySelector('#location-select');
-    const hotelsSelect = document.querySelector('#hotels-select');
-
-    countrySelect.addEventListener('change', (event) => {
-      this.setState({
-        selected: {
-          country: event.target.value,
-        }
-      });
-      // 호텔, 지역 선택값 초기화
-      locationSelect.options[0].selected = true;
-      hotelsSelect.options[0].selected = true;
-    });
+  //Country
+  const [selectedCountry, setSelectedCountry] = useState(null);
+  const hotelsCountries = totalHotels.map(hotel => hotel.country);
+  const selectCountry = (e) => {
+    setSelectedCountry(e.target.value);
   }
 
-  handleLocationSelect() {
-    const locationSelect = document.querySelector('#location-select');
-    const hotelsSelect = document.querySelector('#hotels-select');
-
-    locationSelect.addEventListener('change', (event) => {
-      this.setState({
-        selected: {
-          ...this.state.selected, // setState를 그냥 하면 country가 초기화됨.. 그래서 그대로 가져가는걸 ...(전개연산자)로 덮어씌우고 설정한다.
-          location: event.target.value,
-        }
-      });
-      // 호텔 선택값 초기화
-      hotelsSelect.options[0].selected = true;
-    });
+  //Location
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const hotelsLocations = totalHotels
+    .filter(hotels => selectedCountry === hotels.country)
+    .map(hotel => hotel.location);
+  const selectLocation = (e) => {
+    setSelectedLocation(e.target.value);
   }
 
-  componentDidMount() {
-    this.getHotelNameAPI();
-    this.handleCountrySelect();
-    this.handleLocationSelect();
-  }
+  //Name
+  const hotelsNames = totalHotels
+    .filter(hotels => selectedLocation === hotels.location)
+    .map(hotel => hotel.hotel_name);
+  
 
-  render() {
-    const { selected, totalHotels } = this.state; // 그대로 가져오면 안됨. {}으로 객체 자체를 가져와서 배열로 할당.
-
-    // country
-    const selectCountries = totalHotels.map((obj) => obj.country);
-    const uniqueSelectCountries = [...new Set(selectCountries)];
-    const mappingSelectCountries = uniqueSelectCountries.map((obj, key) => {
-      return <option value={obj} key={key}>{obj}</option>;
-    });
-
-    // location
-    const locationsEqualToCountry = totalHotels.filter((obj) => {
-      if (selected.country === obj.country) {
-        return obj.location
-      }
-    });
-    const selectLocations = locationsEqualToCountry.map((obj) => obj.location);
-    const uniqueSelectLocations = [...new Set(selectLocations)];
-    const mappingSelectLocations = uniqueSelectLocations.map((obj, key) => {
-      return <option value={obj} key={key}>{obj}</option>;
-    })
-
-    // hotel_name
-    const hotelNameEqualToLocation = totalHotels.filter((obj) => {
-      if (selected.location === obj.location) {
-        return obj.hotel_name
-      }
-    });
-    const selectHotelNames = hotelNameEqualToLocation.map((obj) => obj.hotel_name);
-    const mappingSelectHotelNames = selectHotelNames.map((name, key) => {
-      return <option value={name} key={key}>{name}</option>;
-    });
-
-    return (
-      <div>
+  if (loading) return (<div className='loading'><h1>로딩중..</h1></div>);
+  if (error) return (
+    <div className='error'>
+      <h1>로딩중 에러가 발생했습니다.</h1>
+      <button onClick={fetchHotels}>다시 불러오기</button>
+    </div>);
+  if (!totalHotels) return null;
+  
+  return (
+    <div>
         <label>나라: </label>
-        <select id="country-select" defaultValue="default">
+        <select id="country-select" defaultValue="default" onClick={selectCountry}>
           <option value="default" disabled>
             Choose a Country ...
           </option>
-          {mappingSelectCountries}
+          {[...new Set(hotelsCountries)].map((hotelsCountry, key) => (
+            <option value={hotelsCountry} key={key}>{hotelsCountry}</option>
+          ))}
         </select>
         <br></br>
 
         <label>지역: </label>
-        <select id="location-select" defaultValue="default">
+        <select id="location-select" defaultValue="default" onClick={selectLocation}>
           <option value="default" disabled>
             Choose a Location ...
           </option>
-          {mappingSelectLocations}
+          {[...new Set(hotelsLocations)].map((hotelsLocation, key) => (
+            <option value={hotelsLocation} key={key}>{hotelsLocation}</option>
+          ))}
         </select>
         <br></br>
         
@@ -120,9 +86,12 @@ export default class HotelsName extends React.Component {
           <option value="default" disabled>
             Choose a Hotel ...
           </option>
-          {mappingSelectHotelNames}
+          {hotelsNames.map((hotelsName, key) => (
+            <option value={hotelsName} key={key}>{hotelsName}</option>
+          ))}
         </select>
       </div>
-    );
-  }
+  );
 }
+
+export default HotelsName;
