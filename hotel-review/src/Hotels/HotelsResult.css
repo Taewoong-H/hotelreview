@@ -1,0 +1,20 @@
+#positive-word-cloud {
+    float: left;
+    width: 45%;
+    margin-left: 2rem;
+}
+
+#positive-review-head {
+    text-align: center;
+}
+
+#negative-word-cloud {
+    float: left;
+    width: 45%;
+    margin-right: 2rem;
+    margin-left: 2rem;
+}
+
+#negative-review-head {
+    text-align: center;
+}

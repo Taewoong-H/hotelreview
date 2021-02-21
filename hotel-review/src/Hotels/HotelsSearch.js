@@ -3,7 +3,8 @@ import HotelsResult from './HotelsResult';
 import axios from 'axios';
 
 function HotelsSearch() {
-  const [reviewWords, setReviewWords] = useState([]);
+  const [positiveReviews, setPositiveReviews] = useState([]);
+  const [negativeReviews, setNegativeReviews] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -19,14 +20,27 @@ function HotelsSearch() {
       setLoading(true);
 
       const response = await axios.post('http://localhost:3001/api/hotel_review', { name: value });
-      const reviewArray = getBasicWord(response.data).split(',');
+      const positiveReview = getPositiveReview(response.data);
+      const negativeReview = getNegativeReview(response.data);
+      
+      const positiveReviewWords = getBasicWord(positiveReview).split(',');
+      const negativeReviewWords = getBasicWord(negativeReview).split(',');
 
-      setReviewWords(reviewArray);
+      setPositiveReviews(positiveReviewWords);
+      setNegativeReviews(negativeReviewWords);
     } catch (e) {
       setError(e);
     }
     setLoading(false);
   };
+
+  const getPositiveReview = (datas) => {
+    return datas.filter((data) => data.grade > 7);
+  }
+
+  const getNegativeReview = (datas) => {
+    return datas.filter((data) => data.grade <= 7);
+  }
 
   const getBasicWord = (data) => {
     let reviewDataAll = '';
@@ -52,7 +66,7 @@ function HotelsSearch() {
   return (
     <div>
       <button id="hotels-search" onClick={clickSearch}>검색</button>
-      <HotelsResult words={reviewWords} />
+      <HotelsResult positiveWords={positiveReviews} negativeWords={negativeReviews} />
     </div>
   );
 }

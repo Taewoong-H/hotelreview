@@ -1,5 +1,6 @@
 import React from 'react';
 import Hotels from './Hotels/index';
+import './App.css';
 
 function App() {
   return (
